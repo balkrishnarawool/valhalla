@@ -1,6 +1,7 @@
 package valueobjects;
 
 import jdk.internal.value.ValueClass;
+import jdk.internal.vm.annotation.NullRestricted;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -15,6 +16,15 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
+
+/// Add
+///     --enable-preview
+///     --add-exports
+///     java.base/jdk.internal.vm.annotation=ALL-UNNAMED
+///     --add-exports
+///     java.base/jdk.internal.value.annotation=ALL-UNNAMED
+///     --add-exports
+///     java.base/jdk.internal.value=ALL-UNNAMED
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -68,6 +78,7 @@ public class ValueObjectsPerformanceBenchmark {
     @Benchmark
     public long sumTraditional() {
         var sum = 0L;
+
         for (int i = 0; i < ARRAY_SIZE; i++) {
             sum += legacyArray[i].x + legacyArray[i].y;
         }
@@ -76,15 +87,6 @@ public class ValueObjectsPerformanceBenchmark {
 
     @Benchmark
     public long sumValhalla() {
-        var sum = 0L;
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            sum += flatArray[i].x + flatArray[i].y;
-        }
-        return sum;
-    }
-
-    @Benchmark
-    public long sumValhallaOptimized() {
         long sum = 0;
         // Local copy to encourage local loop optimization
         final var localArray = this.flatArray;
@@ -97,6 +99,7 @@ public class ValueObjectsPerformanceBenchmark {
         }
         return sum;
     }
+
 
     static void main() throws Exception {
         var opt = new OptionsBuilder().include(ValueObjectsPerformanceBenchmark.class.getSimpleName()).build();

@@ -69,7 +69,6 @@ public class FlattenedObjectsDemo {
 
     private static long profileValhallaArray() throws InterruptedException {
         return profile(() -> {
-            // CRITICAL FIX: Explicitly allocate a Null-Restricted, Non-Atomic flat array
             // This ensures the JVM treats it like a raw primitive array (int[] / long[])
             var flatArray = (ValhallaPoint[]) ValueClass.newNullRestrictedNonAtomicArray(
                     ValhallaPoint.class, ARRAY_SIZE, new ValhallaPoint(0, 0)
